@@ -22,6 +22,7 @@ flask = "*"
 werkzeug = "==0.15.4"
 flask-avatars = "*"
 flask-whooshee = "*"
+sendgrid = "*"
 
 [requires]
 python_version = "3.7"

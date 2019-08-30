@@ -22,8 +22,10 @@ class BaseConfig(object):
     SESSION_COOKIE_NAME = os.getenv('SESSION_COOKIE_NAME', 'updateframe_session')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', '748166112@qq.com')
-    MAIL_SERVER = 'smtp.163.com'
-    MAIL_PORT = 465
+    MAIL_SERVER = 'smtp.gmail.com'
+    # MAIL_SERVER = 'smtp.163.com'
+    # MAIL_PORT = 465
+    MAIL_PORT = 587
     MAIL_USE_SSL = True
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
