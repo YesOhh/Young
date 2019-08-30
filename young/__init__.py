@@ -131,7 +131,7 @@ def register_errorhandlers(app):
 def register_logger(app):
     app.logger.setLevel(logging.INFO)
     formatter = logging.Formatter(fmt='%(asctime)s %(name)s %(levelname)s:\n%(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-    file_handler = RotatingFileHandler(os.path.join(BASE_DIR, 'log', 'RegressionTestFrame.log'),
+    file_handler = RotatingFileHandler(os.path.join(BASE_DIR, 'log', 'Young.log'),
                                        maxBytes=20 * 1024 * 1024, backupCount=5)
     file_handler.setFormatter(formatter)
     file_handler.setLevel(logging.INFO)
