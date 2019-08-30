@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block header %}
+搜索：{{ q }}
+{% endblock %}
+
+{% block content %}
+<div class="mt-2">
+
+    {% if result %}
+    {% for res in index_list %}
+    {% if res.name %}
+    <!--说明是用户-->
+    <div class="media">
+        <img class="avatar-xm align-self-start mr-3" src="{{ avatars.default() }}">
+        <div class="media-body">
+            <h5>
+                <a href="{{ url_for('user.user_info', username=res.username) }}"
+                   class="text-secondary mt-0"><strong>{{ res.name }}</strong></a>
+            </h5>
+            <p>
+                {% if res.location %}
+                <span class="oi oi-map-marker"></span> {{ res.location }}&nbsp;·
+                {% endif %}
+                {{ res.posts|length }} 文章&nbsp;·
+                {{ res.followers.count() }} 关注者
+            </p>
+        </div>
+    </div>
+    {% else %}
+    <!--说明是文章-->
+    <h5>
+        <a href="{{ url_for('main.show_post', post_id=res.id) }}">{{ res.title }}</a>
+        <small class="float-right btn disabled" data-toggle="tooltip" data-placement="top" data-delay="200"
+               data-timestamp="{{ res.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ') }}">
+            {{ moment(res.timestamp).fromNow(refresh=True) }}
+        </small>
+    </h5>
+    分类：
+    <a href="{{ url_for('main.category_post', category_name=res.category.name) }}">{{ res.category.name }}</a>&nbsp;&nbsp;&nbsp;
+    作者：
+    <a href="{{ url_for('user.user_info', username=res.user.username) }}">{{ res.user.name }}</a>
+    {% endif %}
+    {% if not loop.last %}
+    <hr>
+    {% endif %}
+    {% endfor %}
+    <div class="page-footer mt-3">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {{ html|safe }}
+            </ul>
+        </nav>
+    </div>
+    {% else %}
+    没有搜到结果
+    {% endif %}
+</div>
+{% endblock %}

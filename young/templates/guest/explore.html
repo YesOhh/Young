@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        {% if posts %}
+        {% for post in posts %}
+        <h4>
+            <a href="{{ url_for('main.show_post', post_id=post.id) }}">{{ post.title }}</a>
+        </h4>
+        <small>
+            &nbsp;<a href="{{ url_for('main.category_post', category_name=post.category.name) }}" class="float-right">{{ post.category.name }}</a>
+        </small>
+        <p>
+            {{ post.body|striptags|truncate(length=200,end='......') }}
+            <small><a href="{{ url_for('main.show_post', post_id=post.id) }}">阅读全文</a></small>
+        </p>
+        <small>
+            评论：<a href="{{ url_for('main.show_post', post_id=post.id) }}#comments">{{ post.comments|length }}</a>
+        </small>
+        <div class="float-right">
+            <small class="btn disabled" data-toggle="tooltip" data-placement="top" data-delay="200"
+                   data-timestamp="{{ post.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ') }}">
+                {{ moment(post.timestamp).fromNow(refresh=True) }}
+            </small>
+        </div>
+        {% if not loop.last %}
+        <hr>
+        {% endif %}
+        {% endfor %}
+        <div class="page-footer mt-3">{{ render_pagination(pagination) }}</div>
+        {% else %}
+        暂无新文章，快去写一篇吧~
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

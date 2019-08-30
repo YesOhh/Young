@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-3">欢迎━(*｀∀´*)ノ!</h1>
+    <p class="lead">这是一个简介。</p>
+    <hr class="my-4">
+    <p>记录工作、学习、生活的博客。</p>
+    <p>
+        随便逛逛，欢迎 <a class="btn btn-success btn-md" href="{{ url_for('main.explore') }}">Explore</a>
+    </p>
+    <p>
+        感兴趣？欢迎
+        <a class="btn btn-success btn-md" href="{{ url_for('auth.register') }}">注册</a>
+         or
+        <a class="btn btn-success btn-md" href="{{ url_for('auth.login') }}">登录</a>
+    </p>
+
+</div>
+{% endblock %}

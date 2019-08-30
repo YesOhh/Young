@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link text-secondary" href="{{ url_for('main.index') }}">最新</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active">关注人动态</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-secondary" href="{{ url_for('user.collecting') }}">收藏的文章</a>
+            </li>
+        </ul>
+        <div class="fade show mt-4 active">
+            {% if follows %}
+                {% for follow in follows %}
+                <div class="media">
+                    <img class="avatar-xm align-self-start mr-3" src="{{ url_for('user.get_avatar', filename=follow.followed.avatar_m) }}">
+                    <div class="media-body">
+                        <h5>
+                            <a href="{{ url_for('user.user_info', username=follow.followed.username) }}" class="text-secondary mt-0"><strong>{{ follow.followed.name }}</strong></a>
+                        </h5>
+                        <p>
+                            {% if follow.followed.location %}
+                            <span class="oi oi-map-marker"></span> {{ follow.followed.location }}&nbsp;·
+                            {% endif %}
+                            {{ follow.followed.posts|length }} 文章&nbsp;·
+                            {{ follow.followed.followers.count() }} 关注者
+                        </p>
+                        {% if follow.followed.posts %}
+                            <div class="inline">
+                                <a href="{{ url_for('main.show_post', post_id=follow.followed.posts[-1].id) }}">{{ follow.followed.posts[-1].title }}</a>
+                                <div class="float-right">
+                                    <small class="btn disabled" data-toggle="tooltip" data-placement="top" data-delay="200"
+                                           data-timestamp="{{ follow.followed.posts[-1].timestamp.strftime('%Y-%m-%dT%H:%M:%SZ') }}">
+                                        发布于： {{ moment(follow.followed.posts[-1].timestamp).fromNow(refresh=True) }}
+                                    </small>
+                                </div>
+                            </div>
+                            <br>
+                            {{ follow.followed.posts[-1].body|striptags|truncate(length=256,end='......') }}
+                            <small><a href="{{ url_for('main.show_post', post_id=follow.followed.posts[-1].id) }}">阅读全文</a></small> /
+                            <small><a href="{{ url_for('user.user_info', username=follow.followed.username) }}" class="text-secondary">更多文章</a></small>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if not loop.last %}
+                <hr>
+                {% endif %}
+                {% endfor %}
+                <div class="page-footer mt-3">{{ render_pagination(pagination) }}</div>
+            {% else %}
+            暂未关注任何人~先去<a href="{{ url_for('main.index') }}">随便逛逛</a>吧！
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

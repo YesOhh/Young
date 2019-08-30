@@ -1,0 +1,32 @@
+{% extends 'user/personal_setting.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='jcrop/css/jquery.Jcrop.min.css') }}">
+{% endblock %}
+
+{% block setting_content %}
+<div class="card w-100">
+    <h4 class="card-header bg-light">修改头像</h4>
+    <div class="card-body">
+        {{ render_form(upload_form, action=url_for('user.upload_avatar')) }}
+        <small class="text-muted">
+            文件大小需要小于 3M ，文件格式需要为JPG或者PNG。
+        </small>
+    </div>
+    <div class="card-body w-100">
+        {{ avatars.crop_box('user.get_avatar', current_user.avatar_raw) }}
+        {{ avatars.preview_box('user.get_avatar', current_user.avatar_raw) }}
+    </div>
+    <div class="card-body">
+        {{ render_form(crop_form, action=url_for('user.crop_avatar')) }}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='jcrop/js/jquery.Jcrop.min.js') }}"></script>
+{{ avatars.init_jcrop() }}
+{% endblock %}

@@ -1,0 +1,7 @@
+<p>你好{{ user.username }}，</p>
+<p>欢迎使用<b>Young Blog</b>！</p>
+<p>
+    请访问以下链接用于验证你的新邮箱地址：<br>
+    <a href="{{ url_for('user.confirm_change_email', token=token, _external=True) }}">{{ url_for('user.confirm_change_email', token=token, _external=True) }}</a>
+</p>
+<small>（此邮件请勿回复！谢谢！）</small>

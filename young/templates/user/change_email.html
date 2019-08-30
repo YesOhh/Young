@@ -1,0 +1,11 @@
+{%  extends 'user/personal_setting.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block setting_content %}
+<div class="card">
+    <h4 class="card-header bg-light">修改邮箱</h4>
+    <div class="card-body">
+        {{ render_form(form) }}
+    </div>
+</div>
+{% endblock %}

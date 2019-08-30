@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import form_field %}
+{% from 'bootstrap/form.html' import render_form %}
+{% from 'bootstrap/form.html' import render_field %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block Header %}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h3 class="page-header">{{ post.title }}</h3>
+    分类：<a href="{{ url_for('main.category_post', category_name=post.category.name) }}">{{ post.category.name }}</a>&nbsp;&nbsp;&nbsp;
+    作者：<a href="{{ url_for('user.user_info', username=post.user.username) }}">{{ post.user.name }}</a>&nbsp;&nbsp;&nbsp;
+    {{ moment(post.timestamp).format('lll') }}
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        {{ post.body|safe }}
+        <hr>
+        <div class="comments" id="comments">
+            <h4>{{ pagination.total }} 评论</h4>
+            {% if comments %}
+            <ul class="list-group mb-3">
+                {% for comment in comments %}
+                <li class="list-group-item flex-column">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">
+                            <a href="{{ url_for('user.user_info', username=comment.user.username) }}">
+                                {{ comment.user.name }}
+                            </a>
+                            {% if comment.user.is_admin %}
+                            <span class="badge badge-danger">管理员</span>
+                            {% endif %}
+                            {% if comment.user == post.user %}
+                            <span class="badge badge-primary">作者</span>
+                            {% endif %}
+                            {% if comment.replied %}
+                            <span class="badge badge-light">回复</span>
+                            {% endif %}
+                        </h5>
+                        <small data-toggle="tooltip" data-placement="top" data-delay="200"
+                               data-timestamp="{{ comment.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ') }}">
+                            {{ moment(comment.timestamp).fromNow(refresh=True) }}
+                        </small>
+                    </div>
+                    {% if comment.replied %}
+                    <p class="alert alert-dark reply-body">{{ comment.replied.user.name }}:
+                        <br>{{ comment.replied.body }}
+                    </p>
+                    {% endif %}
+                    <p class="mb-1">
+                        {{ comment.body }}
+                    </p>
+                    <div class="float-right">
+                        {% if current_user.is_authenticated %}
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                data-target="#ReplyComment">回复
+                        </button>
+                        <div class="modal" id="ReplyComment" tabindex="-1" role="dialog"
+                             aria-labelledby="ReplyCommentTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="ReplyCommentTitle">回复@{{comment.user.name}}</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="post"
+                                              action="{{ url_for('user.reply_comment', comment_id=comment.id) }}">
+                                            {{ form.csrf_token }}
+                                            {{ render_field(rform.body) }}<br>
+                                            {{ render_field(rform.submit) }}<br>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% if current_user.is_admin %}
+                        <form class="inline" method="post"
+                              action="{{ url_for('admin.delete_comment', comment_id=comment.id, next=request.full_path) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button class="btn btn-danger btn-sm" type="submit" onclick="return confirm('是否确认删除？');">
+                                删除
+                            </button>
+                        </form>
+                        {% endif %}
+                        {% else %}
+                        <a href="{{ url_for('auth.login', next=request.full_path) }}">登录</a>后回复
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {{ render_pagination(pagination, fragment='#comments') }}
+            {% endif %}
+            {% if current_user.is_authenticated %}
+            {{ render_form(form, action=url_for('user.add_comment', post_id=post.id)) }}
+            {% else %}
+            <a href="{{ url_for('auth.login', next=request.full_path) }}">登录</a>后评论
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-4">
+        {% include "main/_sidebar.html" %}
+    </div>
+</div>
+{% endblock %}

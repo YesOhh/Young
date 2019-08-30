@@ -1,0 +1,2 @@
+FLASK_APP=young
+FLASK_ENV=development

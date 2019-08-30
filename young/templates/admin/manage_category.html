@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+{% from 'bootstrap/form.html' import render_field %}
+
+{% block title %}Young Blog——分类管理{% endblock %}
+
+{% block header %}
+分类管理
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="d-flex justify-content-between">
+        <h3>
+            分类
+            <small class="text-muted">{{ categories|length }}</small>
+        </h3>
+        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#NewCategory">新建分类
+        </button>
+        <div class="modal fade" id="NewCategory" tabindex="-1" role="dialog" aria-labelledby="NewCategoryTitle"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="NewCategoryTitle">新建分类</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {{ render_form(cform, action=url_for('.new_category', next=request.full_path)) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% if categories %}
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th></th>
+        <th>名称</th>
+        <th>文章数量</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for category in categories %}
+    <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ category.name }}</td>
+        <td>{{ category.posts|length }}</td>
+        <td>
+            <a class="btn btn-primary btn-sm mr-2" href="#editcategory{{category.id}}" data-toggle="collapse" role="button">编辑</a>
+            <form class="inline" method="post"
+                  action="{{ url_for('.del_category', category_id=category.id, next=request.full_path) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('确认删除分类？');">删除</button>
+            </form>
+
+            <div class="collapse" id="editcategory{{category.id}}">
+                <div class="card" style="width:345px">
+                    <div class="card-body">
+                        {{ render_form(form, action=url_for('.edit_category', category_id=category.id, next=request.full_path)) }}
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="tip"><h5>暂无分类</h5></div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+
+{% block title %}Young Blog——写文章{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+{{ render_form(form) }}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
+{% endblock %}

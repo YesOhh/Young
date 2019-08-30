@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+{% from 'bootstrap/form.html' import render_field %}
+
+{% block title %}Young Blog——文章管理{% endblock %}
+
+{% block header %}
+文章管理
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="d-flex justify-content-between">
+        <h3>
+            文章
+            <small class="text-muted">{{ posts|length }}</small>
+        </h3>
+    </div>
+</div>
+{% if posts %}
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th></th>
+        <th>名称</th>
+        <th>作者</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for post in posts %}
+    <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ post.title }}</td>
+        <td>{{ post.user.name }}</td>
+        <td>
+            <form class="inline" method="post"
+                  action="{{ url_for('.del_post', post_id=post.id, next=request.full_path) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('确认删除文章？');">删除</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="tip"><h5>暂无文章</h5></div>
+{% endif %}
+{% endblock %}

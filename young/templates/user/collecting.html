@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link text-secondary" href="{{ url_for('main.index') }}">最新</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-secondary" href="{{ url_for('user.following') }}">关注人动态</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active">收藏的文章</a>
+            </li>
+        </ul>
+        <div class="fade show mt-4 active">
+            {% if collects %}
+                {% for collect in collects %}
+                    <h5>
+                        <a href="{{ url_for('main.show_post', post_id=collect.collected.id) }}">{{ collect.collected.title }}</a>
+                        <small class="float-right btn disabled" data-toggle="tooltip" data-placement="top" data-delay="200"
+                       data-timestamp="{{ collect.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ') }}">
+                        收藏于 {{ moment(collect.timestamp).fromNow(refresh=True) }}
+                        </small>
+                    </h5>
+                        分类：
+                        <a href="{{ url_for('main.category_post', category_name=collect.collected.category.name) }}">{{ collect.collected.category.name }}</a>&nbsp;&nbsp;&nbsp;
+                        作者：
+                        <a href="{{ url_for('user.user_info', username=collect.collected.user.username) }}">{{ collect.collected.user.name }}</a>
+                {% if not loop.last %}
+                <hr>
+                {% endif %}
+                {% endfor %}
+                <div class="page-footer mt-3">{{ render_pagination(pagination) }}</div>
+            {% else %}
+            暂无收藏~先去<a href="{{ url_for('main.index') }}">随便逛逛</a>吧！
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

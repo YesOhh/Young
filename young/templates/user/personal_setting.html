@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/nav.html' import render_nav_item %}
+
+{% block title %}个人设置{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h3>设置</h3>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="nav nav-pills flex-column" role="tablist" aria-orientation="vertical">
+            {{ render_nav_item('user.edit_profile', '编辑资料') }}
+            {{ render_nav_item('user.change_email', '修改邮箱') }}
+            {{ render_nav_item('user.change_password', '修改密码') }}
+            {{ render_nav_item('user.change_avatar', '修改头像') }}
+        </div>
+    </div>
+    <div class="col-md-9">
+        {% block setting_content %}{% endblock %}
+    </div>
+</div>
+
+{% endblock %}

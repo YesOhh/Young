@@ -1,0 +1,8 @@
+你好{{ user.username }}，
+
+欢迎使用Young Blog！
+
+    请访问以下链接用于验证你的新邮箱地址：
+    {{ url_for('user.confirm_change_email', token=token, _external=True) }}
+
+（此邮件请勿回复！谢谢！）

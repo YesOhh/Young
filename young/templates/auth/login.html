@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block title %}登录{% endblock %}
+
+{% block header %}登录{% endblock %}
+
+{% block content %}
+<!--<div class="slim-center-form mt-5">-->
+<div class="row justify-content-md-center">
+    <div class="col-md-6 mt-5">
+        {{render_form(form)}}
+        <a class="float-right text-secondary" href="{{ url_for('auth.forget_password') }}">忘记密码</a>
+    </div>
+</div>
+<hr class="mt-5">
+{% endblock %}
+
+{% block footer %}
+<div class="row justify-content-md-center">
+    <div class="col-md-6">
+        <div class="d-flex justify-content-end">
+            <form action="{{url_for('auth.register')}}">
+                <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                <button type="submit" class="btn btn-success">注册账户</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

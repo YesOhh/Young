@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block title %}{{user.name}} 个人主页{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="d-flex justify-content-start">
+        <img class="avatar-xm align-self-start mr-3" src="{{ url_for('user.get_avatar', filename=current_user.avatar_m) }}">
+        <h3>{{user.name}}</h3>
+        <span class="text-muted"><small>个人主页</small></span>
+
+        &nbsp;&nbsp;&nbsp;
+        {% if current_user != user %}
+            {% if not current_user.is_following(user) %}
+            <form class="inline" method="post" action="{{ url_for('user.follow', username=user.username, next=request.full_path) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-primary" title="关注作者">
+                    <span class="oi oi-check"></span>关注
+                </button>
+            </form>
+            {% else %}
+            <form class="inline" method="post" action="{{ url_for('user.unfollow', username=user.username, next=request.full_path) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-secondary" id="demo" onmouseover="document.getElementById('demo').innerHTML='取消关注';" onmouseout=document.getElementById('demo').innerHTML='已关注';>
+                    已关注
+                </button>
+            </form>
+            {% endif %}
+        {% endif %}
+
+    </div>
+</div>
+<p>
+    {% if user.location %}
+    <span class="oi oi-map-marker"></span> {{ user.location }}&nbsp;·
+    {% endif %}
+    <span class="oi oi-calendar"></span> 注册时间 {{ moment(user.member_since).format('LL') }}&nbsp;·
+    {{ user.following.count() }} 关注的人&nbsp;·
+    {{ user.followers.count() }} 关注者
+    {% if current_user.username == user.username %}
+    <a class="float-right btn btn-primary btn-sm" role="button" href="{{ url_for('user.edit_profile') }}">编辑资料</a>
+    {% endif %}
+</p>
+
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link text-secondary" href="{{ url_for('user.user_info', username=user.username) }}">
+            文章 {{user.posts|length}}
+        </a>
+        {% if current_user == user %}
+        <a class="nav-item nav-link text-secondary" href="{{ url_for('user.post_replies', username=user.username) }}">
+            文章评论
+        </a>
+        <a class="nav-item nav-link text-secondary" href="{{ url_for('user.user_comments', username=user.username) }}">
+            我的评论
+        </a>
+        <a class="nav-item nav-link active">
+            收到的回复
+        </a>
+        {% endif %}
+    </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active">
+        {% if replies %}
+        {% for reply in index_list %}
+        <div class="border-style p-2">
+            <a href="#">{{ reply.user.name }}</a>
+            在<small class="btn disabled" data-toggle="tooltip" data-placement="top" data-delay="200"
+                   data-timestamp="{{ reply.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ') }}">
+                {{ moment(reply.timestamp).fromNow(refresh=True) }}
+            </small>回复：{{ reply.body }}
+            <small><a href="{{ url_for('main.show_post', post_id=reply.post.id) }}#comments">查看全部评论</a></small>
+            <div class="card ml-2 mt-1">
+                <div class="card-body">
+                    <h6 class="card-title">我在 <a href="{{ url_for('main.show_post', post_id=reply.post_id) }}">{{ reply.post.title }}</a> 评论说：</h6>
+                    <p class="card-text">{{ reply.replied.body|striptags|truncate(length=64,end='......') }}</p>
+                </div>
+            </div>
+        </div>
+        {% if not loop.last %}
+        <hr>
+        {% endif %}
+        {% endfor %}
+        <div class="page-footer mt-3">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {{ html|safe }}
+                </ul>
+            </nav>
+        </div>
+        {% else %}
+        暂无收到的回复~
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
