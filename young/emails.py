@@ -18,6 +18,7 @@ from flask import (
 import os
 import sendgrid
 from sendgrid.helpers.mail import Email as SGEmail, Content, Mail as SGMail
+import requests
 
 
 def _send_async_mail(app, message):
@@ -25,7 +26,7 @@ def _send_async_mail(app, message):
         mail.send(message)
 
 
-def send_mail(to, subject, template, **kwargs):
+def old_send_mail(to, subject, template, **kwargs):
     message = Message(current_app.config['MAIL_PREFIX'] + ' ' + subject, recipients=[to])
     message.body = render_template(template + '.txt', **kwargs)
     message.html = render_template(template + '.html', **kwargs)
@@ -59,3 +60,32 @@ def send_change_email_email(user, token, to=None):
 def send_reset_password_email(user, token):
     send_mail(subject='修改密码确认', to=user.email, template='emails/reset_password', user=user, token=token)
     # send_api_mail(subject='修改密码确认', to=user.email, template='emails/reset_password', user=user, token=token)
+
+
+def send_mail(to, subject, template, **kwargs):
+    # url = "http://api.sendcloud.net/apiv2/mail/send"
+    API_USER = os.environ.get('SENDCLOUD_API_USER')
+    API_KEY = os.environ.get('SENDCLOUD_API_KEY')
+
+    params = {
+        'apiUser': API_USER,
+        'apiKey': API_KEY,
+        'to': to,
+        'from': 'noreply@young.com',
+        'fromName': 'YongBlog',
+        'subject': subject,
+        'html': render_template(template + '.html', **kwargs)
+    }
+
+    # r = requests.post(url, data=params)
+    app = current_app._get_current_object()
+    thr = Thread(target=_sendcloud_send_async_mail, args=[app, params])
+    thr.start()
+    return thr
+
+
+
+def _sendcloud_send_async_mail(app, params):
+    url = "http://api.sendcloud.net/apiv2/mail/send"
+    with app.app_context():
+        requests.post(url, data=params)
