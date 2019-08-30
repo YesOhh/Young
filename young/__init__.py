@@ -84,6 +84,16 @@ def register_commands(app):
         Role.init_role()
         click.echo('完成！')
 
+    @app.cli.command()
+    @click.option('--drop', is_flag=True, help='Create after drop.')
+    def initdb(drop):
+        if drop:
+            click.confirm('This operation will delete the database, do you want to continue?', abort=True)
+            db.drop_all()
+            click.echo('Drop tables.')
+        db.create_all()
+        click.echo('Initialized database.')
+
 
 def register_template_context(app):
     @app.context_processor
