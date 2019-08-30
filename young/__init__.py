@@ -138,3 +138,4 @@ def register_logger(app):
     default_handler.setLevel(logging.INFO)
     if not app.debug:
         app.logger.addHandler(file_handler)
+        app.logger.addHandler(default_handler)
