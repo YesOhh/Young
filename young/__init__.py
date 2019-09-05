@@ -38,7 +38,7 @@ from logging.handlers import RotatingFileHandler
 from flask.logging import default_handler
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 
 def create_app(config_name=None):
