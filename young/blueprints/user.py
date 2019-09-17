@@ -312,10 +312,11 @@ def post_replies(username):
         comments = []
         for post in posts:
             latest_comment = Comment.query.with_parent(post).order_by(Comment.timestamp.desc()).first()
-            page_settings = current_app.config['YOUNG_BLOG_PER_PAGE']
-            nums = Comment.query.with_parent(post).count()
-            latest_comment_page = 1 if nums <= page_settings else nums // page_settings
-            comments.append((latest_comment, latest_comment_page))
+            if latest_comment:
+                page_settings = current_app.config['YOUNG_BLOG_PER_PAGE']
+                nums = Comment.query.with_parent(post).count()
+                latest_comment_page = 1 if nums <= page_settings else nums // page_settings
+                comments.append((latest_comment, latest_comment_page))
         comments.sort(key=lambda ct: ct[0].timestamp, reverse=True)
         return render_template('user/post_replies.html', user=current_user, comments=comments, pagination=pagination)
     else:

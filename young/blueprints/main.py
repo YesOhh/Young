@@ -36,13 +36,18 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/')
 @main_bp.route('/index')
 def index():
-    if current_user.is_authenticated:
-        page = request.args.get('page', 1, type=int)
-        per_page = current_app.config['YOUNG_BLOG_PER_PAGE']
-        pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page=page, per_page=per_page)
-        posts = pagination.items
-        return render_template('main/index.html', pagination=pagination, posts=posts)
-    return render_template('main/about.html')
+    # if current_user.is_authenticated:
+    #     page = request.args.get('page', 1, type=int)
+    #     per_page = current_app.config['YOUNG_BLOG_PER_PAGE']
+    #     pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page=page, per_page=per_page)
+    #     posts = pagination.items
+    #     return render_template('main/index.html', pagination=pagination, posts=posts)
+    # return render_template('main/about.html')
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['YOUNG_BLOG_PER_PAGE']
+    pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page=page, per_page=per_page)
+    posts = pagination.items
+    return render_template('main/index.html', pagination=pagination, posts=posts)
 
 
 @main_bp.route('/explore')

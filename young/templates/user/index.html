@@ -10,6 +10,7 @@
         <h3>{{user.name}}</h3>
         <span class="text-muted"><small>个人主页</small></span>
 
+        {% if current_user.is_authenticated %}
         &nbsp;&nbsp;&nbsp;
         {% if current_user != user %}
             {% if not current_user.is_following(user) %}
@@ -27,6 +28,7 @@
                 </button>
             </form>
             {% endif %}
+        {% endif %}
         {% endif %}
 
     </div>

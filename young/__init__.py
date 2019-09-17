@@ -38,7 +38,7 @@ from logging.handlers import RotatingFileHandler
 from flask.logging import default_handler
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 
 def create_app(config_name=None):
@@ -52,6 +52,7 @@ def create_app(config_name=None):
     register_commands(app)
     register_template_context(app)
     register_errorhandlers(app)
+    register_logger(app)
     migrate = Migrate(app, db)
     return app
 
@@ -135,7 +136,5 @@ def register_logger(app):
                                        maxBytes=20 * 1024 * 1024, backupCount=5)
     file_handler.setFormatter(formatter)
     file_handler.setLevel(logging.INFO)
-    default_handler.setLevel(logging.INFO)
     if not app.debug:
         app.logger.addHandler(file_handler)
-        app.logger.addHandler(default_handler)

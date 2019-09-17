@@ -19,9 +19,9 @@ class Operation:
 
 class BaseConfig(object):
     SECRET_KEY = os.getenv('SECRET_KEY', '72212e82eb6444d586b98eb171c15f73')
-    SESSION_COOKIE_NAME = os.getenv('SESSION_COOKIE_NAME', 'updateframe_session')
+    SESSION_COOKIE_NAME = os.getenv('SESSION_COOKIE_NAME', 'young_session')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', '748166112@qq.com')
+    ADMIN_EMAIL = os.getenv('ADMIN_EMAIL')
     MAIL_SERVER = 'smtp.gmail.com'
     # MAIL_SERVER = 'smtp.163.com'
     # MAIL_PORT = 465
