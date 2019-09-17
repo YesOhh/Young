@@ -37,6 +37,7 @@ class BaseConfig(object):
     MAX_CONTENT_LENGTH = 3 * 1024 * 1024
     AVATARS_SAVE_PATH = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), 'upload_avatars')
     AVATARS_SIZE_TUPLE = (30, 100, 200)
+    WTF_CSRF_TIME_LIMIT = 10800
 
 
 class DevelopmentConfig(BaseConfig):
